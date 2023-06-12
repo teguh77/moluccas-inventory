@@ -1,0 +1,295 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
+}
+
+// ---USER---
+enum Role {
+  USER
+  RT
+  KSBU
+}
+
+model User {
+  id       String     @id @default(cuid())
+  username String     @unique @db.VarChar(255)
+  password String
+  fullname String     @db.VarChar(255)
+  role     Role?      @default(USER)
+  rule     Rule?
+  incart   Incart[]
+  order    Order[]
+  notif    Notif[]
+  proposal Proposal[]
+  stockIn  StockIn[]
+  stockOut StockOut[]
+
+  @@map("users")
+}
+
+// ---END USER---
+
+// ---PRODUCT---
+model Category {
+  id        String    @id @default(cuid())
+  title     String    @unique @db.VarChar(255)
+  products  Product[]
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@map("categories")
+}
+
+model Product {
+  id             String      @id @default(cuid())
+  code           String      @unique
+  name           String      @db.VarChar(255)
+  description    String?
+  latestQuantity Int         @default(0) @map("latest_quantity")
+  category       Category    @relation(fields: [categoryId], references: [id])
+  categoryId     String      @map("category_id")
+  stocks         Stock[]
+  stockIn        StockIn[]
+  stockOut       StockOut[]
+  adjustment     Adjustment?
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+
+  @@map("products")
+}
+
+model Stock {
+  id          String   @id @default(cuid())
+  description String?
+  price       Int
+  quantity    Int
+  product     Product  @relation(fields: [productId], references: [id])
+  productId   String   @map("product_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("stocks")
+}
+
+model StockIn {
+  id           String   @id @default(cuid())
+  description  String?
+  price        Int
+  quantity     Int
+  note         String?  @db.VarChar(255)
+  product      Product? @relation(fields: [productId], references: [id])
+  productId    String?
+  user         User?    @relation(fields: [userId], references: [id])
+  userId       String?  @map("user_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  category     String?
+  createdMonth String?  @map("created_month")
+
+  @@map("stocks_in")
+}
+
+model StockOut {
+  id           String   @id @default(cuid())
+  description  String?
+  price        Int
+  quantity     Int
+  note         String?  @db.VarChar(255)
+  product      Product? @relation(fields: [productId], references: [id])
+  productId    String?
+  user         User?    @relation(fields: [userId], references: [id])
+  userId       String?  @map("user_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  category     String?
+  createdMonth String?  @map("created_month")
+
+  @@map("stocks_out")
+}
+
+// ---END PRODUCT---
+
+// ---INCART---
+model Incart {
+  id          String         @id @default(cuid())
+  products    IncartDetail[]
+  user        User           @relation(fields: [userId], references: [id])
+  userId      String         @map("user_id")
+  requestNote RequestNote?
+
+  @@map("incarts")
+}
+
+model IncartDetail {
+  id              String  @id @default(cuid())
+  productName     String  @map("product_name") @db.VarChar(255)
+  productCategory String  @map("product_category") @db.VarChar(255)
+  productQuantity Int     @map("product_quantity")
+  productIncart   Int     @map("product_incart")
+  productCode     String  @map("product_code")
+  productId       String  @map("product_id")
+  incart          Incart? @relation(fields: [incartId], references: [id])
+  incartId        String? @map("incart_id")
+
+  @@map("incarts_detail")
+}
+
+// ---END INCART---
+
+// ---RULE---
+
+enum Rules {
+  ALLOW
+  PREVENT
+}
+
+model Rule {
+  id             String  @id @default(cuid())
+  allowAddToCart Rules?  @default(ALLOW) @map("allow_add_to_cart")
+  activeStep     Int?    @default(1) @map("active_step") @db.SmallInt
+  user           User?   @relation(fields: [userId], references: [id])
+  userId         String? @unique @map("user_id")
+
+  @@map("rules")
+}
+
+// ---END RULE---
+
+// ---ORDER & NOTIF---
+
+model Order {
+  id           String        @id @default(cuid())
+  carts        Cart[]
+  user         User          @relation(fields: [userId], references: [id])
+  userId       String        @map("user_id")
+  deliveryNote DeliveryNote?
+  createdAt    DateTime      @default(now()) @map("created_at")
+
+  @@map("orders")
+}
+
+model Cart {
+  id              String   @id @default(cuid())
+  productName     String   @map("product_name") @db.VarChar(255)
+  productCategory String   @map("product_category") @db.VarChar(255)
+  productQuantity Int      @map("product_quantity")
+  productCode     String   @map("product_code")
+  order           Order?   @relation(fields: [orderId], references: [id])
+  orderId         String?  @map("order_id")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@map("carts")
+}
+
+// ---END ORDER---
+
+// ---NOTIF---
+enum Status {
+  APPROVED
+  REJECTED
+  NOTHING // digunakan ketika notif membutuhkan tindak lanjut baik approve maupun reject
+  READY // digunakan ketika RT sudah menyaiapkan barang dan info ke user
+  INSTRUCTION // ketika notifikasi diajukan oleh KSBU ke RT maka dari PURE menjadi INSTRUCTION
+  PURE // digunakan ketika notif hanya bertujuan untuk pemberitahuan dan tidak ada tindak lanjut apapun
+}
+
+enum NotifType {
+  STOCKIN
+  STOCKOUT
+  PROPOSAL
+  ADJUSTMENT
+}
+
+model Notif {
+  id          String      @id @default(cuid())
+  status      Status?     @default(NOTHING)
+  type        NotifType?
+  description String?
+  note        String?
+  user        User?       @relation(fields: [userId], references: [id])
+  userId      String?     @map("user_id")
+  proposal    Proposal?   @relation(fields: [proposalId], references: [id])
+  proposalId  String?     @unique @map("proposal_id")
+  notifCarts  NotifCart[]
+  adjustment  Adjustment?
+
+  @@map("notifs")
+}
+
+model NotifCart {
+  id              String   @id @default(cuid())
+  productName     String   @map("product_name") @db.VarChar(255)
+  productCategory String   @map("product_category") @db.VarChar(255)
+  productQuantity Int      @map("product_quantity")
+  productCode     String   @map("product_code")
+  description     String?
+  price           Int?
+  productId       String?
+  notif           Notif?   @relation(fields: [notifId], references: [id])
+  notifId         String?  @map("notif_id")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@map("notifs_cart")
+}
+
+// ---END NOTIF---
+
+// ---USULAN (PROPOSAL)---
+model Proposal {
+  id          String   @id @default(cuid())
+  productName String   @map("product_name") @db.VarChar(255)
+  description String?
+  quantity    Int
+  user        User?    @relation(fields: [userId], references: [id])
+  notif       Notif?
+  userId      String?  @map("user_id")
+  whenNeeded  String?  @map("when_needed")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("proposals")
+}
+
+// ---END USULAN (PROPOSAL)---
+
+// ---NOTA---
+model RequestNote {
+  id              String   @id @default(cuid())
+  referenceNumber String   @unique @map("reference_number")
+  incart          Incart?  @relation(fields: [incartId], references: [id])
+  incartId        String?  @unique @map("incart_id")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@map("request_notes")
+}
+
+model DeliveryNote {
+  id              String   @id @default(cuid())
+  referenceNumber String   @unique @map("reference_number")
+  order           Order?   @relation(fields: [orderId], references: [id])
+  orderId         String?  @unique @map("order_id")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@map("delivery_notes")
+}
+
+// ---END NOTA---
+
+// ---ADJUSTMENT---
+model Adjustment {
+  id             String   @id @default(cuid())
+  product        Product? @relation(fields: [productId], references: [id])
+  productId      String?  @unique @map("product_id")
+  adjustQuantity Int      @map("adjust_quantity")
+  note           String?  @db.VarChar(255)
+  notif          Notif?   @relation(fields: [notifId], references: [id])
+  notifId        String?  @unique @map("notif_id")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@map("adjustment")
+}
+
+// ---END ADJUSTMENT---
