@@ -14,7 +14,7 @@ import * as Yup from 'yup';
 import TextField from '@/components/FormUI/TextField';
 import MUIAlert, { AlertProps } from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
-import { useAuthDispatch, useAuthState } from '@/contexts/auth';
+import { useAuthDispatch } from '@/contexts/auth';
 
 import Image from 'next/image';
 
@@ -45,12 +45,6 @@ export default function Login() {
   const router = useRouter();
   const dispatch = useAuthDispatch();
 
-  const { authenticated } = useAuthState();
-
-  useEffect(() => {
-    if (authenticated) router.push('/');
-  }, [authenticated, router]);
-
   useEffect(() => {
     router.prefetch('/');
   }, [router]);
@@ -69,6 +63,7 @@ export default function Login() {
     {
       onSuccess: (data) => {
         dispatch && dispatch('LOGIN', data?.data);
+        router.push('/');
       },
       onError: (error: any) => {
         setErrors(error?.response.data);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -7,15 +7,19 @@ import { useAuthState } from '../contexts/auth';
 
 export default function NotFound() {
   const { authenticated } = useAuthState();
-  const { back, push } = useRouter();
+  const router = useRouter();
 
   const backHandler = () => {
-    back();
+    router.back();
   };
 
   const loginHandler = () => {
-    push('/login');
+    router.push('/login');
   };
+
+  useEffect(() => {
+    router.prefetch('/login');
+  }, [router]);
 
   return (
     <>

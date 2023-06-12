@@ -1,5 +1,4 @@
 import { jwtVerify } from 'jose';
-import { verify } from 'jsonwebtoken';
 
 type TUser = {
   username: string;

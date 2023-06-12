@@ -18,7 +18,6 @@ import Avatar from '@mui/material/Avatar';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import TablePagination from '@mui/material/TablePagination';
-import TextField from '@mui/material/TextField';
 import MUIAlert, { AlertProps } from '@mui/material/Alert';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
@@ -27,13 +26,10 @@ import CardContent from '@mui/material/CardContent';
 import Box from '@mui/material/Box';
 import axios from 'axios';
 import { add, format } from 'date-fns';
-import { verify } from 'jsonwebtoken';
-import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useAuthState } from '../../contexts/auth';
 import { Properties } from '../../lib/types';
-import prisma from '../../lib/prisma';
 import Loading from '../../components/Loading';
 import Snackbar from '@mui/material/Snackbar';
 import Popper from '@mui/material/Popper';
@@ -697,33 +693,3 @@ const Detail = () => {
 };
 
 export default Detail;
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  try {
-    const { cookie } = req.headers;
-    if (!cookie) {
-      return {
-        redirect: {
-          destination: '/login',
-          permanent: false,
-        },
-      };
-    }
-    const { authorization } = req.cookies;
-    if (authorization) {
-      const { userId }: any = verify(authorization, process.env.JWT_SECRET!);
-      await prisma.user.findUnique({ where: { id: userId } });
-    }
-
-    return {
-      props: {},
-    };
-  } catch (err) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
-};

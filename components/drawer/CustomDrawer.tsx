@@ -1,4 +1,4 @@
-import React, { useState, FC, useContext, useRef } from 'react';
+import React, { useState, FC, useContext, useRef, useEffect } from 'react';
 import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
 import AllInboxIcon from '@mui/icons-material/AllInbox';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -71,6 +71,10 @@ const CustomDrawer: FC<Props> = (props) => {
   const [anchorElPopperMobile, setAnchorElPopperMobile] = useState(null);
   const [openPopperMobile, setOpenPopperMobile] = useState(false);
 
+  useEffect(() => {
+    router.prefetch('/login');
+  }, [router]);
+
   const popperHandlerMobile = (event: any) => {
     setAnchorElPopperMobile(event.currentTarget);
     setOpenPopperMobile((prev) => !prev);
@@ -96,6 +100,7 @@ const CustomDrawer: FC<Props> = (props) => {
         router.push('/login');
       });
   };
+
   const handleMenuClose = () => {
     setAnchorElProfile(null);
   };
