@@ -42,15 +42,16 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 export default function Login() {
   const [errors, setErrors] = useState<any | null>(null);
   const [openSnack, setOpenSnack] = useState(false);
+  const [loginStatus, setLoginStatus] = useState(false);
   const router = useRouter();
   const dispatch = useAuthDispatch();
-  // const { authenticated } = useAuthState();
+  const { authenticated } = useAuthState();
 
-  // useEffect(() => {
-  //   if (authenticated) {
-  //     router.push('/');
-  //   }
-  // }, [authenticated, router]);
+  useEffect(() => {
+    if (authenticated || loginStatus) {
+      router.push('/');
+    }
+  }, [authenticated, router]);
 
   useEffect(() => {
     router.prefetch('/');
@@ -70,6 +71,7 @@ export default function Login() {
     {
       onSuccess: (data) => {
         dispatch && dispatch('LOGIN', data?.data);
+        setLoginStatus(true);
         router.push('/');
       },
       onError: (error: any) => {
