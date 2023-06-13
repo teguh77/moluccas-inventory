@@ -51,7 +51,7 @@ export default function Login() {
     if (authenticated || loginStatus) {
       router.push('/');
     }
-  }, [authenticated, router]);
+  }, [authenticated, router, loginStatus]);
 
   useEffect(() => {
     router.prefetch('/');
