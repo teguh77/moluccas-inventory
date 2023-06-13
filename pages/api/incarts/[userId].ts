@@ -14,12 +14,17 @@ router.use(auth).get(async (req, res) => {
         userId: userId as string,
       },
       select: {
-        products: true,
+        id: true,
         user: true,
+        products: true,
       },
     });
 
-    return res.json({ user: incart?.user, products: incart?.products });
+    return res.json({
+      id: incart?.id,
+      user: incart?.user,
+      notifCarts: incart?.products,
+    });
   } catch (error) {
     return res.status(500).json({ message: 'Something went wrong' });
   }

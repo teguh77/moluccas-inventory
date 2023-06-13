@@ -13,11 +13,13 @@ router.use(auth).get(async (req, res) => {
       where: {
         id: id as string,
       },
-      include: {
+      select: {
+        id: true,
+        user: true,
         notifCarts: true,
       },
     });
-    return res.json(notif?.notifCarts);
+    return res.json(notif);
   } catch (error) {
     return res.status(500).json({ message: 'Something went wrong' });
   }

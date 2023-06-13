@@ -26,8 +26,9 @@ type Props = {
 };
 
 type Incart = {
+  id: string;
   user: User;
-  products: IncartDetail[];
+  notifCarts: IncartDetail[];
 };
 
 const UserNotif = ({ notif, isSuccess }: Props) => {

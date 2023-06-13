@@ -25,8 +25,9 @@ type Props = {
 };
 
 type Incart = {
+  id: string;
   user: User;
-  products: IncartDetail[];
+  notifCarts: IncartDetail[];
 };
 
 const UserNotif = ({ notif, isSuccess }: Props) => {
@@ -43,6 +44,7 @@ const UserNotif = ({ notif, isSuccess }: Props) => {
     }
     const setMyIncart = async () => {
       const { data } = await axios.get(`/api/notifs/${notifId}`);
+
       setIncart(data);
       setLoading(false);
     };

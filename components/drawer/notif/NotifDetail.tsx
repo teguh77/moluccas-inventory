@@ -40,8 +40,9 @@ type Rule = {
 type NotifProps = {
   notif: Notif;
   incart: {
+    id: string;
     user: User;
-    products: IncartDetail[];
+    notifCarts: IncartDetail[];
   };
   setOpenDetail: (value: boolean) => void;
 };
@@ -255,7 +256,7 @@ const NotifDetail = ({ setOpenDetail, notif, incart }: NotifProps) => {
             </TableHead>
             <TableBody>
               {type === 'STOCKIN'
-                ? incart?.products.map((item) => (
+                ? incart?.notifCarts?.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell
                         component="th"
@@ -269,7 +270,7 @@ const NotifDetail = ({ setOpenDetail, notif, incart }: NotifProps) => {
                       </TableCell>
                     </TableRow>
                   ))
-                : incart.products?.map((item) => (
+                : incart.notifCarts?.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell
                         component="th"

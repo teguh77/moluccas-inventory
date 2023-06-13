@@ -24,11 +24,12 @@ import { useMutation, useQueryClient } from 'react-query';
 import { CartNotifContext } from '@/contexts/cartnotif';
 
 import { CartNotifContextProps } from '@/contexts/cartnotif';
-import { NotifCart, Product } from '@/lib/types';
+import { NotifCart, Product, User } from '@/lib/types';
 
 import GeneralModal from '@/components/modal/GeneralModal';
 
 import Loading from '@/components/Loading';
+import { IncartDetail } from '@prisma/client';
 
 type AdjusmentProps = {
   latestQuantity: number;
@@ -40,6 +41,12 @@ type AdjusmentProps = {
 type RowProps = {
   item: NotifCart;
   idx: number;
+};
+
+type TIncart = {
+  id: string;
+  user: User;
+  notifCarts: IncartDetail[];
 };
 
 type TableProps = {
@@ -249,9 +256,10 @@ export default function CollapsibleTable({
       return;
     }
     const setIncart = async () => {
-      const { data: notifCart } = await axios.get(`/api/notifs/${notifId}`);
+      const { data } = await axios.get<TIncart>(`/api/notifs/${notifId}`);
+
       setCartNotifUpdate((prev: NotifCart[]) =>
-        prev?.length !== 0 ? prev : notifCart,
+        prev?.length !== 0 ? prev : data.notifCarts,
       );
       setLoading(false);
     };

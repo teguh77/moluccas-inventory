@@ -28,7 +28,7 @@ import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import axios from 'axios';
 import { useMutation, useQueryClient } from 'react-query';
-import { Product } from '@/lib/types';
+import { Product, User } from '@/lib/types';
 import { IncartDetail } from '@prisma/client';
 import { ProductContext, ProductContextProps } from '@/contexts/product';
 
@@ -43,6 +43,12 @@ type AdujustmentProps = {
   productQuantity: number;
   setProductQuantity: (value: any) => any;
   quantity: number;
+};
+
+type TIncart = {
+  id: string;
+  user: User;
+  notifCarts: IncartDetail[];
 };
 
 function setLocalStorage(key: string, value: any) {
@@ -280,6 +286,7 @@ export default function CollapsibleTable({
   const [incartsUpdate, setIncartsUpdate] = useState<IncartDetail[]>(() =>
     getLocalStorage('incarts', []),
   );
+
   const queryClient = useQueryClient();
 
   const [openModalAuth, setOpenModalAuth] = useState(false);
@@ -334,9 +341,10 @@ export default function CollapsibleTable({
       return;
     }
     const setIncart = async () => {
-      const { data: incarts } = await axios.get(`/api/incarts/${userId}`);
+      const { data } = await axios.get<TIncart>(`/api/incarts/${userId}`);
+
       setIncartsUpdate((prev: IncartDetail[]) =>
-        prev?.length !== 0 ? prev : incarts?.products,
+        prev?.length !== 0 ? prev : data?.notifCarts,
       );
       setLoading(false);
     };
