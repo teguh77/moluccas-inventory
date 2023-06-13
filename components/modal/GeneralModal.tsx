@@ -81,9 +81,7 @@ const GeneralModal: FC<ModalProps> = ({
       return axios.patch('/api/rules', data);
     },
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries('rules');
-      },
+      onSuccess: () => Promise.all([queryClient.invalidateQueries('rules')]),
     },
   );
 
@@ -98,9 +96,12 @@ const GeneralModal: FC<ModalProps> = ({
       });
     },
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries('rules');
-      },
+      onSuccess: () =>
+        Promise.all([
+          queryClient.invalidateQueries('rules'),
+          queryClient.invalidateQueries('notifs'),
+          queryClient.invalidateQueries('incarts'),
+        ]),
     },
   );
 
@@ -128,7 +129,6 @@ const GeneralModal: FC<ModalProps> = ({
         deleteLocalStorage('incarts');
         handleModalClose();
         setOpenApprovalPopper(false);
-        queryClient.invalidateQueries('notifs');
         if (setCartNotifUpdate) {
           setCartNotifUpdate([]);
         }

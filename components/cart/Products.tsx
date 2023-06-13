@@ -97,9 +97,11 @@ const Products = ({ rules, isSuccess }: Props) => {
       return axios.post('/api/incarts', data);
     },
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries('incarts');
-      },
+      onSuccess: () =>
+        Promise.all([
+          queryClient.invalidateQueries('notifs'),
+          queryClient.invalidateQueries('incarts'),
+        ]),
     },
   );
 
@@ -156,7 +158,6 @@ const Products = ({ rules, isSuccess }: Props) => {
       })
       .finally(async () => {
         setCartToEmpty();
-        await queryClient.invalidateQueries('notifs');
       });
   };
 

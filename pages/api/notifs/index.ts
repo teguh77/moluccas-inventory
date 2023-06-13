@@ -11,7 +11,7 @@ export const getApiNotifs = async (
   res: NextApiResponse,
 ) => {
   const { role, userId } = req.user;
-  let notif;
+  let notif = [];
 
   try {
     if (role === 'KSBU') {
@@ -50,7 +50,8 @@ export const getApiNotifs = async (
           },
         },
       });
-      notif = firstNotif.concat(secondNotif);
+      const KSBUNotif = firstNotif.concat(secondNotif);
+      return res.json(KSBUNotif);
     } else if (role === 'RT') {
       const firstNotif = await prisma.notif.findMany({
         where: {
@@ -100,9 +101,10 @@ export const getApiNotifs = async (
           },
         },
       });
-      notif = firstNotif.concat(secondNotif);
+      const RTNotif = firstNotif.concat(secondNotif);
+      return res.json(RTNotif);
     } else {
-      notif = await prisma.notif.findMany({
+      const anyNotif = await prisma.notif.findMany({
         where: {
           OR: [{ status: 'READY' }, { status: 'REJECTED' }],
           type: 'STOCKOUT',
@@ -117,9 +119,8 @@ export const getApiNotifs = async (
           },
         },
       });
+      return res.json(anyNotif);
     }
-
-    return res.json(await notif);
   } catch (error) {
     return res.status(500).json({ message: 'Something went wrong' });
   }

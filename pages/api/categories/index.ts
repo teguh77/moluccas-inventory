@@ -22,6 +22,7 @@ export const getCat = async (_: any, res: NextApiResponse) => {
     });
     return res.json(categories);
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: 'Something went wrong' });
   }
 };
@@ -51,6 +52,7 @@ router
       }
       return res.status(400).json({ message: 'Kategori sudah ada' });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: 'Something went wrong' });
     }
   });

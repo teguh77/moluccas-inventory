@@ -43,7 +43,11 @@ const Gallery = () => {
         router.push('/login');
       }
     }
-  }, [isError]);
+  }, [isError, authenticated]);
+
+  useEffect(() => {
+    router.prefetch('/login');
+  }, [router]);
 
   const postsPerPage = 8;
   const [category, setCategory] = useState('');

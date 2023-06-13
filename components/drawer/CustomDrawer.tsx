@@ -26,7 +26,7 @@ import Snackbar from '@mui/material/Snackbar';
 import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useAuthState } from '@/contexts/auth';
+import { useAuthDispatch, useAuthState } from '@/contexts/auth';
 import { CartContext, CartContextProps } from '@/contexts/cart';
 import { NotifContext, NotifContextProps } from '@/contexts/notif';
 import BottomNav from './bottomNavbar/BottomNav';
@@ -68,6 +68,7 @@ const CustomDrawer: FC<Props> = (props) => {
   const [errors, setErrors] = useState<any | null>(null);
   const [openSnack, setOpenSnack] = useState(false);
   const { authenticated } = useAuthState();
+  const dispatch = useAuthDispatch();
   const [anchorElPopperMobile, setAnchorElPopperMobile] = useState(null);
   const [openPopperMobile, setOpenPopperMobile] = useState(false);
 
@@ -91,6 +92,7 @@ const CustomDrawer: FC<Props> = (props) => {
     axios
       .get('/api/auth/logout')
       .then(() => {
+        dispatch && dispatch('LOGOUT');
         router.push('/login');
       })
       .catch((error) => {

@@ -1,8 +1,14 @@
-import { verify } from 'jsonwebtoken';
 import { NextApiResponse } from 'next';
 import { NextHandler } from 'next-connect';
 import prisma from '@/lib/prisma';
 import { NextApiRequestExtended } from '../types';
+import { jwtVerify } from 'jose';
+import { getJwtSecret } from '../auth';
+
+type TUser = {
+  username: string;
+  userId: string;
+};
 
 export default async function auth(
   req: NextApiRequestExtended,
@@ -12,8 +18,14 @@ export default async function auth(
   try {
     const { authorization } = req.cookies;
     if (!authorization) throw new Error('Unauthencticated');
-    const { userId }: any = verify(authorization, process.env.JWT_SECRET!);
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const vefified = await jwtVerify(
+      authorization,
+      new TextEncoder().encode(getJwtSecret()),
+    );
+    const userPayload = vefified.payload as TUser;
+    const user = await prisma.user.findUnique({
+      where: { id: userPayload.userId },
+    });
     if (!user) throw new Error('Unauthenticated');
 
     req.user = {

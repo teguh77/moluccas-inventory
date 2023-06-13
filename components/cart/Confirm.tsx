@@ -69,9 +69,14 @@ const Confirm = ({ rules }: Props) => {
       return axios.post('/api/orders', data);
     },
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries('rules');
-      },
+      onSuccess: () =>
+        Promise.all([
+          queryClient.invalidateQueries('rules'),
+          queryClient.invalidateQueries('notifs'),
+          queryClient.invalidateQueries('incarts'),
+          queryClient.invalidateQueries('products'),
+          queryClient.invalidateQueries('stocks'),
+        ]),
     },
   );
 
@@ -137,7 +142,7 @@ const Confirm = ({ rules }: Props) => {
     <>
       <Grid
         container
-        style={{
+        sx={{
           backgroundColor: 'white',
           minHeight: '33rem',
           borderRadius: 10,
