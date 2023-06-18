@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import axios from 'axios';
 import { Formik } from 'formik';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useMutation } from 'react-query';
 import * as Yup from 'yup';
 import TextField from '@/components/FormUI/TextField';
@@ -72,9 +72,7 @@ export default function Login() {
       onSuccess: (data) => {
         dispatch && dispatch('LOGIN', data?.data);
         setLoginStatus(true);
-        setTimeout(() => {
-          router.push('/');
-        }, 500);
+        router.push('/');
       },
       onError: (error: any) => {
         setErrors(error?.response.data);

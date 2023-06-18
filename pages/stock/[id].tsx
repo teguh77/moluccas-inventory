@@ -27,7 +27,7 @@ import Box from '@mui/material/Box';
 import axios from 'axios';
 import { add, format } from 'date-fns';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthState } from '../../contexts/auth';
 import { Properties } from '../../lib/types';
 import Loading from '../../components/Loading';
@@ -103,8 +103,9 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MUIAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 const Detail = () => {
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const { id } = router.query;
+  const id = searchParams.get('id');
   const [stock, setStock] = useState<StockReport | null>(null);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);

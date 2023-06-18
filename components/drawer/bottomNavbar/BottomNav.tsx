@@ -5,7 +5,7 @@ import FeaturedPlayList from '@mui/icons-material/FeaturedPlayList';
 import MoreVert from '@mui/icons-material/MoreVert';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { CartContext, CartContextProps } from '@/contexts/cart';
 import { Notif } from '@/lib/types';
 

@@ -13,7 +13,7 @@ import CardHeader from '@mui/material/CardHeader';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import dynamic from 'next/dynamic';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import { useAuthState } from '@/contexts/auth';
 import axios from 'axios';

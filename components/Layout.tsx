@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import CustomDrawer from '@/components/drawer/CustomDrawer';
 import { NotifProvider } from '@/contexts/notif';
 import { RuleProvider } from '@/contexts/rule';
@@ -10,7 +10,7 @@ type Props = {
 };
 
 const Layout = ({ children }: Props): JSX.Element => {
-  const { pathname } = useRouter();
+  const pathname = usePathname();
   const authRoutes = ['/login', '/404'];
   const authRoute = authRoutes.includes(pathname);
   return authRoute ? (

@@ -7,7 +7,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MUIAlert, { AlertProps } from '@mui/material/Alert';
 import axios from 'axios';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useAuthState } from '@/contexts/auth';
 import { CartContext, CartContextProps } from '@/contexts/cart';

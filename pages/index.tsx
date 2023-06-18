@@ -12,7 +12,7 @@ import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
 import Products from '../components/home/Products';
 import { Product } from '../lib/types';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useAuthState } from '@/contexts/auth';
 import { ProductContext, ProductContextProps } from '@/contexts/product';
 import { CategoryContext, CategoryContextProps } from '@/contexts/category';

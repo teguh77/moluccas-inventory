@@ -25,7 +25,7 @@ import MUIAlert, { AlertProps } from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import axios from 'axios';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuthDispatch, useAuthState } from '@/contexts/auth';
 import { CartContext, CartContextProps } from '@/contexts/cart';
 import { NotifContext, NotifContextProps } from '@/contexts/notif';
@@ -56,6 +56,7 @@ const CustomDrawer: FC<Props> = (props) => {
   const { notifs, isSuccess } = useContext(NotifContext) as NotifContextProps;
 
   const router = useRouter();
+  const pathname = usePathname();
   const { window, children } = props;
   const container =
     window !== undefined ? () => window().document.body : undefined;
@@ -89,19 +90,19 @@ const CustomDrawer: FC<Props> = (props) => {
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElProfile(event.currentTarget);
   };
-  const logoutHandler = () => {
-    axios
-      .get('/api/auth/logout')
-      .then(() => {
-        dispatch && dispatch('LOGOUT');
-        router.push('/login');
-      })
-      .catch((error) => {
-        if (authenticated) {
-          setErrors(error.response.data);
-        }
-        router.push('/login');
-      });
+  const logoutHandler = async () => {
+    try {
+      await axios.get('/api/auth/logout');
+      if (dispatch) {
+        await dispatch('LOGOUT');
+      }
+      router.push('/login');
+    } catch (error: any) {
+      if (authenticated) {
+        setErrors(error.response.data);
+      }
+      router.push('/login');
+    }
   };
 
   const handleMenuClose = () => {
@@ -135,8 +136,8 @@ const CustomDrawer: FC<Props> = (props) => {
   // END BOTTOM MENU POPPER
   const popperId = openPopper ? 'notif-popper' : undefined;
 
-  const getListStyle = (pathname: string) => {
-    const isActive = router.pathname === pathname;
+  const getListStyle = (name: string) => {
+    const isActive = pathname === name;
     return {
       cursor: 'pointer',
       color: 'white',

@@ -24,7 +24,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MUIAlert, { AlertProps } from '@mui/material/Alert';
 import axios from 'axios';
 import { add } from 'date-fns';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useAuthState } from '@/contexts/auth';
 import { Product } from '@/lib/types';
 import { useQueryClient } from 'react-query';

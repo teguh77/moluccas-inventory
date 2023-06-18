@@ -9,7 +9,7 @@ import Products from '@/components/cart/Products';
 import { CartContext } from '@/contexts/cart';
 import { CartContextType } from '@/lib/types';
 import { RuleContext, RuleContextProps } from '@/contexts/rule';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useAuthState } from '@/contexts/auth';
 
 import Confirm from '@/components/cart/Confirm';
