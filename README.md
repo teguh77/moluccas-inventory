@@ -2,21 +2,21 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-### Pertama, install terlebih dahulu 'dependencies' nya:
+Pertama, install terlebih dahulu 'dependencies' nya:
 
 ```bash
 npm i
 ```
 
-### Kedua, buat file .env untuk menyimpan 'environment variable', lihat referensi .env.example<br><br>
+Kedua, buat file .env untuk menyimpan 'environment variable', lihat referensi .env.example<br><br>
 
-### Setelah itu, jalankan program:
+Setelah itu, jalankan program:
 
 ```bash
 npm run dev
 ```
 
-### Selain itu, untuk seeding database dapat dilakukan dengan cara :
+Selain itu, untuk seeding database dapat dilakukan dengan cara :
 ```bash
 npx prisma migrate dev --name <NAME>
 
