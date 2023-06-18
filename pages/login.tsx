@@ -17,6 +17,7 @@ import Snackbar from '@mui/material/Snackbar';
 import { useAuthDispatch, useAuthState } from '@/contexts/auth';
 
 import Image from 'next/image';
+import { RefetchContext, RefetchProps } from '@/contexts/RefetchHelper';
 
 type LoginValue = {
   username: string;
@@ -45,12 +46,13 @@ export default function Login() {
   const router = useRouter();
   const dispatch = useAuthDispatch();
   const { authenticated } = useAuthState();
+  const { status, setStatus } = useContext(RefetchContext) as RefetchProps;
 
   useEffect(() => {
-    if (authenticated) {
+    if (authenticated || status) {
       router.push('/');
     }
-  }, [authenticated, router]);
+  }, [authenticated, router, status]);
 
   useEffect(() => {
     router.prefetch('/');
@@ -71,6 +73,7 @@ export default function Login() {
       onSuccess: async (data) => {
         dispatch && (await dispatch('LOGIN', data?.data));
         router.push('/');
+        setStatus(true);
       },
       onError: (error: any) => {
         setErrors(error?.response.data);

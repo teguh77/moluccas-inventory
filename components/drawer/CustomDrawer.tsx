@@ -36,6 +36,7 @@ import Notification from './notif';
 import MenuPopper from './bottomNavbar/MenuPopper';
 import GeneralModal from '../modal/GeneralModal';
 import { Tooltip } from '@mui/material';
+import { RefetchContext, RefetchProps } from '@/contexts/RefetchHelper';
 
 const drawerWidth = 240;
 
@@ -69,6 +70,7 @@ const CustomDrawer: FC<Props> = (props) => {
   const [errors, setErrors] = useState<any | null>(null);
   const [openSnack, setOpenSnack] = useState(false);
   const { authenticated } = useAuthState();
+  const { setStatus } = useContext(RefetchContext) as RefetchProps;
   const dispatch = useAuthDispatch();
   const [anchorElPopperMobile, setAnchorElPopperMobile] = useState(null);
   const [openPopperMobile, setOpenPopperMobile] = useState(false);
@@ -97,6 +99,7 @@ const CustomDrawer: FC<Props> = (props) => {
         await dispatch('LOGOUT');
       }
       router.push('/login');
+      setStatus(false);
     } catch (error: any) {
       if (authenticated) {
         setErrors(error.response.data);
