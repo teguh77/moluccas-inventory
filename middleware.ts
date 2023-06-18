@@ -5,9 +5,9 @@ import { verifyAuth } from './lib/auth';
 export async function middleware(req: NextRequest) {
   try {
     const token = req.cookies.get('authorization')?.value;
-    if (!token) {
-      return NextResponse.redirect(new URL('/login', req.url));
-    }
+    // if (!token) {
+    //   return NextResponse.redirect(new URL('/login', req.url));
+    // }
 
     const verifiedToken =
       token &&
