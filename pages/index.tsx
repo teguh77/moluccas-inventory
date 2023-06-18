@@ -19,6 +19,7 @@ import { CategoryContext, CategoryContextProps } from '@/contexts/category';
 import MobileAppbar from '@/components/home/MobileAppbar';
 
 import Loading from '@/components/Loading';
+import { RefetchContext, RefetchProps } from '@/contexts/RefetchHelper';
 
 // icons
 
@@ -34,8 +35,13 @@ const Gallery = () => {
 
   const router = useRouter();
   const { authenticated } = useAuthState();
+  const { status } = useContext(RefetchContext) as RefetchProps;
 
   useEffect(() => {
+    if (authenticated == false || status == false) {
+      router.push('/login');
+    }
+
     if (isError) {
       if (authenticated) {
         throw new Error();
@@ -43,7 +49,7 @@ const Gallery = () => {
         router.push('/login');
       }
     }
-  }, [isError, authenticated]);
+  }, [isError, authenticated, status]);
 
   useEffect(() => {
     router.prefetch('/login');

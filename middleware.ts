@@ -5,9 +5,9 @@ import { verifyAuth } from './lib/auth';
 export async function middleware(req: NextRequest) {
   try {
     const token = req.cookies.get('authorization')?.value;
-    // if (!token) {
-    //   return NextResponse.redirect(new URL('/login', req.url));
-    // }
+    if (!token) {
+      return NextResponse.redirect(new URL('/login', req.url));
+    }
 
     const verifiedToken =
       token &&
@@ -15,15 +15,15 @@ export async function middleware(req: NextRequest) {
         console.log(error);
       }));
 
-    // if (req.nextUrl.pathname.startsWith('/login') && !verifiedToken) {
-    //   return;
-    // }
+    if (req.nextUrl.pathname.startsWith('/login') && !verifiedToken) {
+      return;
+    }
 
     if (req.nextUrl.pathname.includes('/login') && verifiedToken) {
       return NextResponse.redirect(new URL('/', req.url));
     }
 
-    if (!verifiedToken && !req.nextUrl.pathname.startsWith('/')) {
+    if (!verifiedToken) {
       return NextResponse.redirect(new URL('/login', req.url));
     }
 
@@ -36,5 +36,5 @@ export async function middleware(req: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ['/', '/dashboard/:path*', '/cart/:path*', '/stock/:path*'],
+  matcher: ['/dashboard/:path*', '/cart/:path*', '/stock/:path*'],
 };
