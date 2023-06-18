@@ -20,6 +20,8 @@ import MobileAppbar from '@/components/home/MobileAppbar';
 
 import Loading from '@/components/Loading';
 import { RefetchContext, RefetchProps } from '@/contexts/RefetchHelper';
+import { GetServerSideProps } from 'next';
+import { verifyAuth } from '@/lib/auth';
 
 // icons
 
@@ -35,13 +37,8 @@ const Gallery = () => {
 
   const router = useRouter();
   const { authenticated } = useAuthState();
-  const { status } = useContext(RefetchContext) as RefetchProps;
 
   useEffect(() => {
-    if (authenticated == false || status == false) {
-      router.push('/login');
-    }
-
     if (isError) {
       if (authenticated) {
         throw new Error();
@@ -49,7 +46,7 @@ const Gallery = () => {
         router.push('/login');
       }
     }
-  }, [isError, authenticated, status]);
+  }, [isError, authenticated]);
 
   useEffect(() => {
     router.prefetch('/login');
@@ -226,3 +223,34 @@ const Gallery = () => {
 };
 
 export default Gallery;
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  try {
+    const { authorization } = req.cookies;
+    const verifiedToken =
+      authorization &&
+      (await verifyAuth(authorization).catch((error) => {
+        console.log(error);
+      }));
+
+    if (!verifiedToken) {
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false,
+        },
+      };
+    }
+
+    return {
+      props: {},
+    };
+  } catch (err) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+};
