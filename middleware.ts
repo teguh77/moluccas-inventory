@@ -23,7 +23,7 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL('/', req.url));
     }
 
-    if (!verifiedToken && !req.nextUrl.pathname.includes('/login')) {
+    if (!verifiedToken && !req.nextUrl.pathname.startsWith('/login')) {
       return NextResponse.redirect(new URL('/login', req.url));
     }
 
