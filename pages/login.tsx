@@ -70,10 +70,10 @@ export default function Login() {
       return axios.post('/api/auth/login', data);
     },
     {
-      onSuccess: async (data) => {
-        dispatch && (await dispatch('LOGIN', data?.data));
-        router.push('/');
+      onSuccess: (data) => {
+        dispatch && dispatch('LOGIN', data?.data);
         setStatus(true);
+        router.push('/');
       },
       onError: (error: any) => {
         setErrors(error?.response.data);

@@ -15,9 +15,9 @@ export async function middleware(req: NextRequest) {
         console.log(error);
       }));
 
-    if (req.nextUrl.pathname.startsWith('/login') && !verifiedToken) {
-      return;
-    }
+    // if (req.nextUrl.pathname.startsWith('/login') && !verifiedToken) {
+    //   return;
+    // }
 
     if (req.nextUrl.pathname.includes('/login') && verifiedToken) {
       return NextResponse.redirect(new URL('/', req.url));
@@ -36,5 +36,5 @@ export async function middleware(req: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ['/dashboard/:path*', '/cart/:path*', '/stock/:path*'],
+  matcher: ['/', '/dashboard/:path*', '/cart/:path*', '/stock/:path*'],
 };
