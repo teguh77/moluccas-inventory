@@ -15,6 +15,7 @@ import { NotifContext, NotifContextProps } from '@/contexts/notif';
 import { Notif, Rule } from '@/lib/types';
 
 import GeneralModal from '@/components/modal/GeneralModal';
+import { Box } from '@mui/material';
 
 const getIncart = async () => {
   const { data } = await axios.get('/api/incarts');
@@ -148,13 +149,30 @@ const Confirm = ({ rules }: Props) => {
           borderRadius: 10,
         }}
       >
-        <Grid item xs={12} md={6}>
-          <Image
-            src="/images/cartTwo.png"
-            width="600"
-            height="600"
-            alt="cart-two-image"
-          />
+        <Grid
+          item
+          xs={12}
+          md={6}
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              width: '20rem',
+              height: '20rem',
+              position: 'relative',
+            }}
+          >
+            <Image
+              src="/images/cartTwo.png"
+              fill
+              alt="cart-two-image"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          </Box>
         </Grid>
         <Grid item xs={12} md={6}>
           <div

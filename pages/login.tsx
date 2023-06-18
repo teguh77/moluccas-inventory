@@ -72,7 +72,9 @@ export default function Login() {
       onSuccess: (data) => {
         dispatch && dispatch('LOGIN', data?.data);
         setLoginStatus(true);
-        router.push('/');
+        setTimeout(() => {
+          router.push('/');
+        }, 500);
       },
       onError: (error: any) => {
         setErrors(error?.response.data);
@@ -114,6 +116,7 @@ export default function Login() {
           Sign In
         </Typography>
         <Formik
+          key={loginStatus ? 'loggedin' : 'loggedout'}
           initialValues={{ ...INITIAL_FORM_STATE }}
           validationSchema={FORM_VALIDATION}
           onSubmit={handleFormSubmit}

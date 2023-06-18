@@ -74,6 +74,7 @@ const CustomDrawer: FC<Props> = (props) => {
 
   useEffect(() => {
     router.prefetch('/login');
+    router.prefetch('/cart');
   }, [router]);
 
   const popperHandlerMobile = (event: any) => {
