@@ -69,10 +69,12 @@ export default function Login() {
       return axios.post('/api/auth/login', data);
     },
     {
-      onSuccess: (data) => {
-        dispatch && dispatch('LOGIN', data?.data);
+      onSuccess: async (data) => {
+        setTimeout(() => {
+          router.push('/');
+        }, 1000);
+        dispatch && (await dispatch('LOGIN', data?.data));
         setLoginStatus(true);
-        router.push('/');
       },
       onError: (error: any) => {
         setErrors(error?.response.data);
@@ -114,7 +116,6 @@ export default function Login() {
           Sign In
         </Typography>
         <Formik
-          key={loginStatus ? 'loggedin' : 'loggedout'}
           initialValues={{ ...INITIAL_FORM_STATE }}
           validationSchema={FORM_VALIDATION}
           onSubmit={handleFormSubmit}
